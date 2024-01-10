@@ -7,6 +7,9 @@ receivers:
         {{- if (index .Values.metrics "kube-state-metrics").enabled }}
           {{- include "otelcol.config.scrape_config.kube_state_metrics" . | indent 8 }}
         {{- end }}
+        {{- if (index .Values.metrics "node-exporter").enabled }}
+          {{- include "otelcol.config.scrape_config.node_exporter" . | indent 8 }}
+        {{- end }}
 
 extensions:
   # The health_check extension is mandatory for this chart.

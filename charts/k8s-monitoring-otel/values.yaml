@@ -151,6 +151,43 @@ metrics:
       - kube_resourcequota
       - kube_statefulset.*
 
+  # Node metrics from Node Exporter
+  node-exporter:
+    # -- Scrape node metrics
+    enabled: true
+
+    # -- How frequently to scrape metrics from Node Exporter.
+    # Overrides metrics.scrapeInterval
+    # @default -- 60s
+    scrapeInterval: ""
+
+    # -- Label matchers used by the Grafana Agent to select the Node exporter pods
+    labelMatchers:
+      app.kubernetes.io/name: prometheus-node-exporter.*
+
+    # -- Rule blocks to be added to the discovery.relabel component for Node Exporter.
+    # See https://grafana.com/docs/agent/latest/flow/reference/components/discovery.relabel/#rule-block
+    extraRelabelingRules: ""
+
+    # -- Rule blocks to be added to the prometheus.relabel component for Node Exporter.
+    # See https://grafana.com/docs/agent/latest/flow/reference/components/prometheus.relabel/#rule-block
+    extraMetricRelabelingRules: ""
+
+    # Node Exporter service settings
+    service:
+      # -- Does this port use TLS?
+      isTLS: false
+
+    # -- The list of Node Exporter metrics that will be scraped by the Agent
+    # @default -- See [Allow List for Node Exporter](#allow-list-for-node-exporter)
+    allowList:
+      - node_cpu.*
+      - node_exporter_build_info
+      - node_filesystem.*
+      - node_memory.*
+      - process_cpu_seconds_total
+      - process_resident_memory_bytes
+
 # Settings for the Kube State Metrics deployment
 # You can use this sections to make modifications to the Kube State Metrics deployment.
 # See https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics for available values.
@@ -168,6 +205,18 @@ kube-state-metrics:
     enabled: false
   # @ignored - Recreate on update, eliminates the potential for duplicate metrics
   updateStrategy: Recreate
+
+# Settings for the Node Exporter deployment
+# You can use this sections to make modifications to the Node Exporter deployment.
+# See https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter for available values.
+prometheus-node-exporter:
+  # -- Should this helm chart deploy Node Exporter to the cluster.
+  # Set this to false if your cluster already has Node Exporter, or if you do
+  # not want to scrape metrics from Node Exporter.
+  enabled: true
+  # @ignored
+  nodeSelector:
+    kubernetes.io/os: linux
 
 opentelemetry-collector:
   mode: statefulset

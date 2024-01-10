@@ -20,10 +20,10 @@ dependencies:
     version: 5.15.3
     repository: https://prometheus-community.github.io/helm-charts
     condition: kube-state-metrics.enabled
-#  - name: prometheus-node-exporter
-#    version: 4.25.0
-#    repository: https://prometheus-community.github.io/helm-charts
-#    condition: prometheus-node-exporter.enabled
+  - name: prometheus-node-exporter
+    version: 4.25.0
+    repository: https://prometheus-community.github.io/helm-charts
+    condition: prometheus-node-exporter.enabled
 #  - name: prometheus-operator-crds
 #    version: 8.0.1
 #    repository: https://prometheus-community.github.io/helm-charts
