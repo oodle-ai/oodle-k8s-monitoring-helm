@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: {{ .Release.Namespace }}
+data:
+  relay.yaml: |-
+    {{- include "otelcol-config" . | trim | nindent 4 }}

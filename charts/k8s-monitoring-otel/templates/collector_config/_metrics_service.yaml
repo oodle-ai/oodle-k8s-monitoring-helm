@@ -1,0 +1,18 @@
+{{ define "otelcol.config.extension_name.metricsServiceAuth" }}basicauth/metricsService{{ end }}
+{{ define "otelcol.config.extension.metricsServiceAuth" }}
+{{ include "otelcol.config.extension_name.metricsServiceAuth" . }}:
+  client_auth:
+    username: {{ .Values.externalServices.prometheus.basicAuth.username | quote }}
+    password: {{ .Values.externalServices.prometheus.basicAuth.password | quote }}
+{{ end }}
+
+{{ define "otelcol.config.exporter_name.metricsService" }}prometheusremotewrite{{ end }}
+{{ define "otelcol.config.exporter.metricsService" }}
+{{ include "otelcol.config.exporter_name.metricsService" . }}:
+  external_labels:
+    cluster: {{ required ".Values.cluster.name is a required value. Please set it and try again." .Values.cluster.name | quote }}
+    "k8s.cluster.name": {{ required ".Values.cluster.name is a required value. Please set it and try again." .Values.cluster.name | quote }}
+  endpoint: {{ required ".Values.externalServices.prometheus.host is required to use metrics. Please set it and try again." .Values.externalServices.prometheus.host }}{{ .Values.externalServices.prometheus.writeEndpoint }}
+  auth:
+    authenticator: {{ include "otelcol.config.extension_name.metricsServiceAuth" . }}
+{{ end }}

@@ -1,0 +1,193 @@
+# Cluster settings
+cluster:
+  # -- The name of this cluster, which will be set in all labels. Required.
+  name: ""
+
+externalServices:
+  prometheus:
+    # -- Prometheus host where metrics will be sent
+    host: ""
+    # -- The key for the host property in the secret
+    hostKey: host
+
+    # -- The type of server protocol for writing metrics
+    # Options:
+    #   * "remote_write" will use Prometheus Remote Write
+    #   * "otlp" will use OTLP
+    #   * "otlphttp" will use OTLP HTTP
+    protocol: "remote_write"
+    # -- HTTP proxy to proxy requests to Prometheus through.
+    proxyURL: ""
+    # -- Prometheus metrics query endpoint. Preset for Grafana Cloud Metrics instances.
+    queryEndpoint: /api/prom/api/v1/query
+    # -- Prometheus metrics write endpoint. Preset for Grafana Cloud Metrics instances.
+    writeEndpoint: /api/prom/push
+
+    # -- Sets the X-Scope-OrgID header when sending metrics
+    tenantId: ""
+    # -- The key for the tenant ID property in the secret
+    tenantIdKey: tenantId
+
+    # -- one of "none", "basic"
+    authMode: basic
+
+    # Authenticate to Prometheus using basic authentication
+    basicAuth:
+      # -- Prometheus basic auth username
+      username: ""
+      # -- The key for the username property in the secret
+      usernameKey: username
+      # -- Prometheus basic auth password
+      password: ""
+      # -- The key for the password property in the secret
+      passwordKey: password
+
+    # Credential management
+    secret:
+      # -- Should this Helm chart create the secret. If false, you must define the name and namespace values.
+      create: true
+      # -- The name of the secret.
+      name: ""
+      # -- The namespace of the secret. Only used if secret.create = "false"
+      namespace: ""
+
+    # -- TLS setting to configure for the metrics service.
+    # For remoteWrite protocol, refer to https://grafana.com/docs/agent/latest/flow/reference/components/prometheus.remote_write/#tls_config-block
+    # For otlp protocol, refer to https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.exporter.otlp/#tls-block
+    # For otlphttp protocol, refer to https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.exporter.otlphttp/#tls-block
+    tls: {}
+
+    # Metric processor settings. Only applies when protocol is "otlp" or "otlphttp"
+    processors:
+      batch:
+        # -- Amount of data to buffer before flushing the batch.
+        size: 8192
+        # -- Upper limit of a batch size. When set to 0, there is no upper limit.
+        maxSize: 0
+        # -- How long to wait before flushing the batch.
+        timeout: 2s
+      memoryLimiter:
+        # -- Use a memory limiter.
+        enabled: false
+        # -- How often to check memory usage.
+        checkInterval: 1s
+        # -- Maximum amount of memory targeted to be allocated by the process heap.
+        limit: 0MiB
+
+# Settings related to capturing and forwarding metrics
+metrics:
+  # -- Capture and forward metrics
+  enabled: true
+
+  # -- How frequently to scrape metrics
+  scrapeInterval: 60s
+
+  # -- Rule blocks to be added to the discovery.relabel component for all metric sources.
+  # See https://grafana.com/docs/agent/latest/flow/reference/components/discovery.relabel/#rule-block
+  extraRelabelingRules: ""
+
+  # -- Rule blocks to be added to the prometheus.relabel component for all metric sources.
+  # See https://grafana.com/docs/agent/latest/flow/reference/components/prometheus.relabel/#rule-block
+  extraMetricRelabelingRules: ""
+
+  # Cluster object metrics from Kube State Metrics
+  kube-state-metrics:
+    # -- Scrape cluster object metrics from Kube State Metrics
+    enabled: true
+
+    # -- How frequently to scrape metrics from Kube State Metrics.
+    # Overrides metrics.scrapeInterval
+    # @default -- 60s
+    scrapeInterval: ""
+
+    # -- Label matchers used by the Grafana Agent to select the Kube State Metrics service
+    labelMatchers:
+      app.kubernetes.io/name: kube-state-metrics
+
+    # -- Rule blocks to be added to the discovery.relabel component for Kube State Metrics.
+    # See https://grafana.com/docs/agent/latest/flow/reference/components/discovery.relabel/#rule-block
+    extraRelabelingRules: ""
+
+    # -- Rule blocks to be added to the prometheus.relabel component for Kube State Metrics.
+    # See https://grafana.com/docs/agent/latest/flow/reference/components/prometheus.relabel/#rule-block
+    extraMetricRelabelingRules: ""
+
+    # Kube State Metrics service settings
+    service:
+      # -- Name of the metrics port
+      port: http
+      # -- Does this port use TLS?
+      isTLS: false
+
+    # -- The list of Kube State Metrics metrics that will be scraped by the Agent
+    # @default -- See [Allow List for Kube State Metrics](#allow-list-for-kube-state-metrics)
+    allowList:
+      - kube_daemonset.*
+      - kube_deployment_metadata_generation
+      - kube_deployment_spec_replicas
+      - kube_deployment_status_observed_generation
+      - kube_deployment_status_replicas_available
+      - kube_deployment_status_replicas_updated
+      - kube_horizontalpodautoscaler_spec_max_replicas
+      - kube_horizontalpodautoscaler_spec_min_replicas
+      - kube_horizontalpodautoscaler_status_current_replicas
+      - kube_horizontalpodautoscaler_status_desired_replicas
+      - kube_job.*
+      - kube_namespace_status_phase
+      - kube_node.*
+      - kube_persistentvolumeclaim_resource_requests_storage_bytes
+      - kube_pod_container_info
+      - kube_pod_container_resource_limits
+      - kube_pod_container_resource_requests
+      - kube_pod_container_status_last_terminated_reason
+      - kube_pod_container_status_restarts_total
+      - kube_pod_container_status_waiting_reason
+      - kube_pod_info
+      - kube_pod_owner
+      - kube_pod_start_time
+      - kube_pod_status_phase
+      - kube_pod_status_reason
+      - kube_replicaset.*
+      - kube_resourcequota
+      - kube_statefulset.*
+
+# Settings for the Kube State Metrics deployment
+# You can use this sections to make modifications to the Kube State Metrics deployment.
+# See https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics for available values.
+kube-state-metrics:
+  # -- Should this helm chart deploy Kube State Metrics to the cluster.
+  # Set this to false if your cluster already has Kube State Metrics, or if you
+  # do not want to scrape metrics from Kube State Metrics.
+  enabled: true
+  # @ignored
+  nodeSelector:
+    kubernetes.io/os: linux
+
+  # @ignored - Disable autosharding
+  autosharding:
+    enabled: false
+  # @ignored - Recreate on update, eliminates the potential for duplicate metrics
+  updateStrategy: Recreate
+
+opentelemetry-collector:
+  mode: statefulset
+
+  configMap:
+    create: false
+
+  command:
+    extraArgs:
+      - --config=/conf/relay.yaml
+
+  extraVolumes:
+    - name: config
+      configMap:
+        name: otel-collector-config
+
+  extraVolumeMounts:
+    - name: config
+      mountPath: /conf
+
+  presets:
+    clusterMetrics:
+      enabled: true
