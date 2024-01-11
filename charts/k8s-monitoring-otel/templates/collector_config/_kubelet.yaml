@@ -1,11 +1,3 @@
-{{ define "otelcol.config.receiver.kubelet" }}
-kubeletstats:
-  collection_interval: {{ .Values.metrics.kubelet.scrapeInterval | default .Values.metrics.scrapeInterval | quote }}
-  auth_type: "serviceAccount"
-  endpoint: "https://${env:K8S_NODE_NAME}:10250"
-  insecure_skip_verify: true
-{{ end }}
-
 {{ define "otelcol.config.scrape_config.kubelet" }}
 - job_name: integrations/kubernetes/kubelet
   scrape_interval: {{ .Values.metrics.kubelet.scrapeInterval | default .Values.metrics.scrapeInterval | quote }}

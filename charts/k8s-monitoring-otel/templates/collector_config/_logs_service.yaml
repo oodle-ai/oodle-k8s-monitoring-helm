@@ -1,0 +1,15 @@
+{{ define "otelcol.config.extension_name.logsServiceAuth" }}basicauth/logsService{{ end }}
+{{ define "otelcol.config.extension.logsServiceAuth" }}
+{{ include "otelcol.config.extension_name.logsServiceAuth" . }}:
+  client_auth:
+    username: {{ .Values.externalServices.loki.basicAuth.username | quote }}
+    password: {{ .Values.externalServices.loki.basicAuth.password | quote }}
+{{ end }}
+
+{{ define "otelcol.config.exporter_name.logsService" }}loki{{ end }}
+{{ define "otelcol.config.exporter.logsService" }}
+{{ include "otelcol.config.exporter_name.logsService" . }}:
+  endpoint: {{ required ".Values.externalServices.loki.host is required to use logs. Please set it and try again." .Values.externalServices.loki.host }}{{ .Values.externalServices.loki.writeEndpoint }}
+  auth:
+    authenticator: {{ include "otelcol.config.extension_name.logsServiceAuth" . }}
+{{ end }}
