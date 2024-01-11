@@ -1,0 +1,43 @@
+{{ define "otelcol.config.receiver.kubelet" }}
+kubeletstats:
+  collection_interval: {{ .Values.metrics.kubelet.scrapeInterval | default .Values.metrics.scrapeInterval | quote }}
+  auth_type: "serviceAccount"
+  endpoint: "https://${env:K8S_NODE_NAME}:10250"
+  insecure_skip_verify: true
+{{ end }}
+
+{{ define "otelcol.config.scrape_config.kubelet" }}
+- job_name: integrations/kubernetes/kubelet
+  scrape_interval: {{ .Values.metrics.kubelet.scrapeInterval | default .Values.metrics.scrapeInterval | quote }}
+  kubernetes_sd_configs:
+    - role: node
+  relabel_configs:
+    - replacement: {{ .Values.cluster.kubernetesAPIService | quote }}
+      target_label: "__address__"
+    - source_labels: ["__meta_kubernetes_node_name"]
+      regex: "(.+)"
+      replacement: /api/v1/nodes/$${1}/proxy/metrics
+      target_label: "__metrics_path__"
+{{- if .Values.metrics.extraRelabelingRules }}
+{{ .Values.metrics.extraRelabelingRules | indent 4 }}
+{{- end }}
+{{- if .Values.metrics.kubelet.extraRelabelingRules }}
+{{ .Values.metrics.kubelet.extraRelabelingRules | indent 4 }}
+{{- end }}
+  scheme: https
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+    server_name: kubernetes
+  metric_relabel_configs:
+    - source_labels: ["__name__"]
+      regex: "up|{{ join "|" .Values.metrics.kubelet.allowList }}"
+      action: keep
+{{- if .Values.metrics.extraMetricRelabelingRules }}
+{{ .Values.metrics.extraMetricRelabelingRules | indent 4 }}
+{{- end }}
+{{- if .Values.metrics.kubelet.extraMetricRelabelingRules }}
+{{ .Values.metrics.kubelet.extraMetricRelabelingRules | indent 4 }}
+{{- end }}
+{{ end }}

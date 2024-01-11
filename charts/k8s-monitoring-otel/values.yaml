@@ -3,6 +3,12 @@ cluster:
   # -- The name of this cluster, which will be set in all labels. Required.
   name: ""
 
+  # -- The Kubernetes service. Change this if your cluster DNS is configured differently than the default.
+  kubernetesAPIService: kubernetes.default.svc.cluster.local:443
+
+  # -- The specific platform for this cluster. Will enable compatibility changes for some platforms. Supported options: (empty) or "openshift".
+  platform: ""
+
 externalServices:
   prometheus:
     # -- Prometheus host where metrics will be sent
@@ -188,6 +194,100 @@ metrics:
       - process_cpu_seconds_total
       - process_resident_memory_bytes
 
+  # Cluster metrics from the Kubelet
+  kubelet:
+    # -- Scrape cluster metrics from the Kubelet
+    enabled: true
+
+    # -- How frequently to scrape metrics from the Kubelet.
+    # Overrides metrics.scrapeInterval
+    # @default -- 60s
+    scrapeInterval: ""
+
+    # -- Rule blocks to be added to the discovery.relabel component for Kubelet.
+    # See https://grafana.com/docs/agent/latest/flow/reference/components/discovery.relabel/#rule-block
+    extraRelabelingRules: ""
+
+    # -- Rule blocks to be added to the prometheus.relabel component for Kubelet.
+    # See https://grafana.com/docs/agent/latest/flow/reference/components/prometheus.relabel/#rule-block
+    extraMetricRelabelingRules: ""
+
+    # -- The list of Kubelet metrics that will be scraped by the Agent
+    # @default -- See [Allow List for Kubelet](#allow-list-for-kubelet)
+    allowList:
+      - container_cpu_usage_seconds_total
+      - kubelet_certificate_manager_client_expiration_renew_errors
+      - kubelet_certificate_manager_client_ttl_seconds
+      - kubelet_certificate_manager_server_ttl_seconds
+      - kubelet_cgroup_manager_duration_seconds_bucket
+      - kubelet_cgroup_manager_duration_seconds_count
+      - kubelet_node_config_error
+      - kubelet_node_name
+      - kubelet_pleg_relist_duration_seconds_bucket
+      - kubelet_pleg_relist_duration_seconds_count
+      - kubelet_pleg_relist_interval_seconds_bucket
+      - kubelet_pod_start_duration_seconds_bucket
+      - kubelet_pod_start_duration_seconds_count
+      - kubelet_pod_worker_duration_seconds_bucket
+      - kubelet_pod_worker_duration_seconds_count
+      - kubelet_running_container_count
+      - kubelet_running_containers
+      - kubelet_running_pod_count
+      - kubelet_running_pods
+      - kubelet_runtime_operations_errors_total
+      - kubelet_runtime_operations_total
+      - kubelet_server_expiration_renew_errors
+      - kubelet_volume_stats_available_bytes
+      - kubelet_volume_stats_capacity_bytes
+      - kubelet_volume_stats_inodes
+      - kubelet_volume_stats_inodes_used
+      - kubernetes_build_info
+      - namespace_workload_pod
+      - rest_client_requests_total
+      - storage_operation_duration_seconds_count
+      - storage_operation_errors_total
+      - volume_manager_total_volumes
+
+  # Container metrics from cAdvisor
+  cadvisor:
+    # -- Scrape container metrics from cAdvisor
+    enabled: true
+
+    # -- How frequently to scrape metrics from cAdvisor.
+    # Overrides metrics.scrapeInterval
+    # @default -- 60s
+    scrapeInterval: ""
+
+    # -- Rule blocks to be added to the discovery.relabel component for cAdvisor.
+    # See https://grafana.com/docs/agent/latest/flow/reference/components/discovery.relabel/#rule-block
+    extraRelabelingRules: ""
+
+    # -- Rule blocks to be added to the prometheus.relabel component for cAdvisor.
+    # See https://grafana.com/docs/agent/latest/flow/reference/components/prometheus.relabel/#rule-block
+    extraMetricRelabelingRules: ""
+
+    # -- The list of cAdvisor metrics that will be scraped by the Agent
+    # @default -- See [Allow List for cAdvisor](#allow-list-for-cadvisor)
+    allowList:
+      - container_cpu_cfs_periods_total
+      - container_cpu_cfs_throttled_periods_total
+      - container_cpu_usage_seconds_total
+      - container_fs_reads_bytes_total
+      - container_fs_reads_total
+      - container_fs_writes_bytes_total
+      - container_fs_writes_total
+      - container_memory_cache
+      - container_memory_rss
+      - container_memory_swap
+      - container_memory_working_set_bytes
+      - container_network_receive_bytes_total
+      - container_network_receive_packets_dropped_total
+      - container_network_receive_packets_total
+      - container_network_transmit_bytes_total
+      - container_network_transmit_packets_dropped_total
+      - container_network_transmit_packets_total
+      - machine_memory_bytes
+
 # Settings for the Kube State Metrics deployment
 # You can use this sections to make modifications to the Kube State Metrics deployment.
 # See https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics for available values.
@@ -227,6 +327,11 @@ opentelemetry-collector:
   command:
     extraArgs:
       - --config=/conf/relay.yaml
+  extraEnvs:
+    - name: K8S_NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
 
   extraVolumes:
     - name: config
@@ -237,6 +342,26 @@ opentelemetry-collector:
     - name: config
       mountPath: /conf
 
-  presets:
-    clusterMetrics:
-      enabled: true
+  clusterRole:
+    create: true
+    rules:
+      - apiGroups: [ "" ]
+        resources: [ "events", "namespaces", "namespaces/status", "nodes", "nodes/spec", "pods", "pods/status", "replicationcontrollers", "replicationcontrollers/status", "resourcequotas", "services" ]
+        verbs: [ "get", "list", "watch" ]
+      - apiGroups: [ "apps" ]
+        resources: [ "daemonsets", "deployments", "replicasets", "statefulsets" ]
+        verbs: [ "get", "list", "watch" ]
+      - apiGroups: [ "extensions" ]
+        resources: [ "daemonsets", "deployments", "replicasets" ]
+        verbs: [ "get", "list", "watch" ]
+      - apiGroups: [ "batch" ]
+        resources: [ "jobs", "cronjobs" ]
+        verbs: [ "get", "list", "watch" ]
+      - apiGroups: [ "autoscaling" ]
+        resources: [ "horizontalpodautoscalers" ]
+        verbs: [ "get", "list", "watch" ]
+      - apiGroups: [ "" ]
+        resources: [ "nodes/proxy", "nodes/stats" ]
+        verbs: [ "get", "watch", "list" ]
+      - nonResourceURLs: [ "/metrics" ]
+        verbs: [ "get" ]

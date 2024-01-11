@@ -1,6 +1,9 @@
 {{/* OpenTelemetry Collector config */}}
 {{- define "otelcol-config" -}}
 receivers:
+{{/*  {{- if .Values.metrics.kubelet.enabled }}*/}}
+{{/*    {{- include "otelcol.config.receiver.kubelet" . | indent 2 }}*/}}
+{{/*  {{- end }}*/}}
   prometheus:
     config:
       scrape_configs:
@@ -9,6 +12,12 @@ receivers:
         {{- end }}
         {{- if (index .Values.metrics "node-exporter").enabled }}
           {{- include "otelcol.config.scrape_config.node_exporter" . | indent 8 }}
+        {{- end }}
+        {{- if .Values.metrics.kubelet.enabled }}
+          {{- include "otelcol.config.scrape_config.kubelet" . | indent 8 }}
+        {{- end }}
+        {{- if .Values.metrics.cadvisor.enabled }}
+          {{- include "otelcol.config.scrape_config.cadvisor" . | indent 8 }}
         {{- end }}
 
 extensions:
@@ -25,13 +34,16 @@ processors:
   batch: {}
 
 exporters:
-  debug: {}
+  debug:
+    verbosity: basic
   {{- if .Values.metrics.enabled }}
     {{ include "otelcol.config.exporter.metricsService" . | indent 2 }}
   {{- end }}
 
 service:
   telemetry:
+    logs:
+      level: "debug"
     metrics:
       address: ${env:MY_POD_IP}:8888
   extensions:
@@ -41,9 +53,13 @@ service:
   pipelines:
     metrics:
       receivers:
+{{/*        {{- if .Values.metrics.kubelet.enabled }}*/}}
+{{/*        - kubeletstats*/}}
+{{/*        {{- end }}*/}}
         - prometheus
       processors:
         - batch
       exporters:
+        - debug
         - {{ include "otelcol.config.exporter_name.metricsService" . }}
 {{- end -}}
