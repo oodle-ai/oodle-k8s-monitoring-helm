@@ -1,0 +1,25 @@
+{{ define "otelcol.config.receiver_name.hostmetrics" }}hostmetrics{{ end }}
+{{ define "otelcol.config.receiver.hostmetrics" }}
+{{ include "otelcol.config.receiver_name.hostmetrics" .}}:
+  root_path: /hostfs
+  collection_interval: {{ .Values.metrics.hostmetrics.scrapeInterval | default .Values.metrics.scrapeInterval | quote }}
+  scrapers:
+    cpu:
+    load:
+    memory:
+    disk:
+    filesystem:
+    network:
+{{ end }}
+
+{{ define "otelcol.config.processor_name.hostmetrics" }}attributes/hostmetrics{{ end }}
+{{ define "otelcol.config.processor.hostmetrics" }}
+{{ include "otelcol.config.processor_name.hostmetrics" .}}:
+  actions:
+    - action: insert
+      key: instance
+      value: ${env:K8S_NODE_NAME}
+    - action: insert
+      key: job
+      value: integrations/hostmetrics
+{{ end }}

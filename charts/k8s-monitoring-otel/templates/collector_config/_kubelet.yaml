@@ -23,9 +23,11 @@
     insecure_skip_verify: true
     server_name: kubernetes
   metric_relabel_configs:
+{{ if .Values.metrics.kubelet.allowList }}
     - source_labels: ["__name__"]
       regex: "up|{{ join "|" .Values.metrics.kubelet.allowList }}"
       action: keep
+{{- end }}
 {{- if .Values.metrics.extraMetricRelabelingRules }}
 {{ .Values.metrics.extraMetricRelabelingRules | indent 4 }}
 {{- end }}

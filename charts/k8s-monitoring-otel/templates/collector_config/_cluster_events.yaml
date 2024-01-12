@@ -1,0 +1,10 @@
+{{ define "otelcol.config.receiver_name.cluster_events" }}k8sobjects{{ end }}
+{{ define "otelcol.config.receiver.cluster_events" }}
+{{ include "otelcol.config.receiver_name.cluster_events" . }}:
+  objects:
+  - name: events
+    mode: watch
+{{- if .Values.cluster_events.namespaces }}
+    namespaces: {{ .Values.cluster_events.namespaces | toJson }}
+{{- end }}
+{{ end }}

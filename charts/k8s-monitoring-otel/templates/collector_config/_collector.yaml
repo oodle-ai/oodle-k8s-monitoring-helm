@@ -1,0 +1,25 @@
+{{ define "otelcol.config.scrape_config.collector" }}
+- job_name: integrations/opentelemetry-collector
+  scrape_interval: {{ .Values.metrics.collector.scrapeInterval | default .Values.metrics.scrapeInterval | quote }}
+  static_configs:
+    - targets:
+        - ${env:MY_POD_IP}:8888
+{{- if .Values.metrics.extraRelabelingRules }}
+{{ .Values.metrics.extraRelabelingRules | indent 4 }}
+{{- end }}
+{{- if .Values.metrics.collector.extraRelabelingRules }}
+{{ .Values.metrics.collector.extraRelabelingRules | indent 4 }}
+{{- end }}
+  metric_relabel_configs:
+{{- if .Values.metrics.collector.allowList }}
+    - source_labels: ["__name__"]
+      regex: "up|{{ join "|" .Values.metrics.collector.allowList }}"
+      action: keep
+{{- end }}
+{{- if .Values.metrics.extraMetricRelabelingRules }}
+{{ .Values.metrics.extraMetricRelabelingRules | indent 4 }}
+{{- end }}
+{{- if .Values.metrics.collector.extraMetricRelabelingRules }}
+{{ .Values.metrics.collector.extraMetricRelabelingRules | indent 4 }}
+{{- end }}
+{{ end }}

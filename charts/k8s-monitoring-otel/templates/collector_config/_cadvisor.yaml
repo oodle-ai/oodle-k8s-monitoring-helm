@@ -8,7 +8,7 @@
       target_label: "__address__"
     - source_labels: ["__meta_kubernetes_node_name"]
       regex: "(.+)"
-      replacement: "/api/v1/nodes/${1}/proxy/metrics/cadvisor"
+      replacement: /api/v1/nodes/$${1}/proxy/metrics/cadvisor
       target_label: "__metrics_path__"
 {{- if .Values.metrics.extraRelabelingRules }}
 {{ .Values.metrics.extraRelabelingRules | indent 4 }}
@@ -23,9 +23,11 @@
     insecure_skip_verify: true
     server_name: kubernetes
   metric_relabel_configs:
+{{ if .Values.metrics.cadvisor.allowList }}
     - source_labels: ["__name__"]
       regex: "up|{{ join "|" .Values.metrics.cadvisor.allowList }}"
       action: keep
+{{- end }}
 {{- if .Values.metrics.extraMetricRelabelingRules }}
 {{ .Values.metrics.extraMetricRelabelingRules | indent 4 }}
 {{- end }}

@@ -24,9 +24,11 @@
 {{ (index .Values.metrics "node-exporter").extraRelabelingRules | indent 4 }}
 {{- end }}
   metric_relabel_configs:
+{{- if (index .Values.metrics "node-exporter").allowList }}
     - source_labels: ["__name__"]
       regex: "up|{{ join "|" (index .Values.metrics "node-exporter").allowList }}"
       action: keep
+{{- end }}
 {{- if .Values.metrics.extraMetricRelabelingRules }}
 {{ .Values.metrics.extraMetricRelabelingRules | indent 4 }}
 {{- end }}

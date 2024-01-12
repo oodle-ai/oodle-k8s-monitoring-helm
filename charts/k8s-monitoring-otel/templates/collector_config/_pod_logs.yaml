@@ -3,7 +3,10 @@
 {{ include "otelcol.config.receiver_name.pod_logs" . }}:
   include:
     - /var/log/pods/*/*/*.log
-  start_at: beginning
+  exclude:
+    # Exclude logs from all containers named otel-collector
+    - /var/log/pods/*/otel-collector/*.log
+  start_at: end
   include_file_path: true
   include_file_name: false
   operators:
@@ -41,34 +44,37 @@
       timestamp:
         parse_from: attributes.time
         layout: '%Y-%m-%dT%H:%M:%S.%LZ'
-    - type: move
-      from: attributes.log
-      to: body
     # Extract metadata from file path
     - type: regex_parser
       id: extract_metadata_from_filepath
-      # /var/log/pods/kube-system_kube-controller-manager-kind-control-plane_bfa312e5a38151347a1e34c98557f81a/kube-controller-manager/0.log
-                      <namespace>_<pod_name>                                _<uid>                           /<container>            /
-      regex: '^.*\/(?P<namespace>[^_]+)_(?P<pod_name>[^_]+)_(?P<uid>[a-f0-9\-]{36})\/(?P<container_name>[^\._]+)\/(?P<restart_count>\d+)\.log$'
+      # Pod UID is not always 36 characters long
+      regex: '^.*\/(?P<namespace>[^_]+)_(?P<pod_name>[^_]+)_(?P<uid>[a-f0-9\-]{16,36})\/(?P<container_name>[^\._]+)\/(?P<restart_count>\d+)\.log$'
       parse_from: attributes["log.file.path"]
       cache:
-        size: 128 # default maximum amount of Pods per Node is 110
+        size: 128  # default maximum amount of Pods per Node is 110
+    # Update body field after finishing all parsing
+    - type: move
+      from: attributes.log
+      to: body
     # Rename attributes
     - type: move
-      from: attributes["log.file.path"]
-      to: resource["filename"]
+      from: attributes.stream
+      to: attributes["log.iostream"]
     - type: move
       from: attributes.container_name
-      to: resource["container"]
-    - type: move
-      from: attributes.pod_name
-      to: resource["pod"]
+      to: resource["k8s.container.name"]
     - type: move
       from: attributes.namespace
-      to: resource["namespace"]
-    - type: add
-      field: resource["cluster"]
-      value: "default-values-test"
+      to: resource["k8s.namespace.name"]
+    - type: move
+      from: attributes.pod_name
+      to: resource["k8s.pod.name"]
+    - type: move
+      from: attributes.restart_count
+      to: resource["k8s.container.restart_count"]
+    - type: move
+      from: attributes.uid
+      to: resource["k8s.pod.uid"]
 {{ end }}
 
 {{ define "otelcol.config.resource_name.pod_logs" }}resource/podLogs{{ end }}
