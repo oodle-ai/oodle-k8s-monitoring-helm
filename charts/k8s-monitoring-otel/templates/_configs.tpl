@@ -40,6 +40,11 @@ receivers:
 
 processors:
   batch: {}
+{{- if .Values.cluster_events.enabled }}
+  {{ include "otelcol.config.k8sattributes.cluster_events" . | indent 2 }}
+  {{ include "otelcol.config.transform.cluster_events" . | indent 2 }}
+  {{ include "otelcol.config.resource.cluster_events" . | indent 2 }}
+{{- end }}
 
 exporters:
   debug:
@@ -81,6 +86,10 @@ service:
     logs:
       receivers:
         - {{ include "otelcol.config.receiver_name.cluster_events" . }}
+      processors:
+        - {{ include "otelcol.config.k8sattributes_name.cluster_events" .}}
+        - {{ include "otelcol.config.transform_name.cluster_events" . }}
+        - {{ include "otelcol.config.resource_name.cluster_events" . }}
       exporters:
         - debug
         - {{ include "otelcol.config.exporter_name.logsService" . }}

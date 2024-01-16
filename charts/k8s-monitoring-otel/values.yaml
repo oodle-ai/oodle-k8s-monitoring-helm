@@ -629,6 +629,15 @@ metrics:
     # @default -- 60s
     scrapeInterval: ""
 
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sclusterreceiver
+  k8sclusterreceiver:
+    enabled: true
+
+    # -- How frequently to scrape metrics from ServiceMonitor objects. Only used if the ServiceMonitor does not specify the scrape interval.
+    # Overrides metrics.scrapeInterval
+    # @default -- 60s
+    scrapeInterval: ""
+
 # Settings related to capturing and forwarding logs
 logs:
   # -- Capture and forward logs from Kubernetes pods

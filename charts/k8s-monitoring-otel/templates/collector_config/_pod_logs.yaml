@@ -57,9 +57,9 @@
       from: attributes.log
       to: body
     # Rename attributes
-    - type: move
-      from: attributes.stream
-      to: attributes["log.iostream"]
+{{/*    - type: move*/}}
+{{/*      from: attributes.stream*/}}
+{{/*      to: attributes["log.iostream"]*/}}
     - type: move
       from: attributes.container_name
       to: resource["k8s.container.name"]
@@ -69,12 +69,26 @@
     - type: move
       from: attributes.pod_name
       to: resource["k8s.pod.name"]
-    - type: move
-      from: attributes.restart_count
-      to: resource["k8s.container.restart_count"]
-    - type: move
-      from: attributes.uid
-      to: resource["k8s.pod.uid"]
+{{/*    - type: move*/}}
+{{/*      from: attributes.restart_count*/}}
+{{/*      to: resource["k8s.container.restart_count"]*/}}
+{{/*    - type: move*/}}
+{{/*      from: attributes.uid*/}}
+{{/*      to: resource["k8s.pod.uid"]*/}}
+{{ end }}
+
+{{ define "otelcol.config.transform_name.pod_logs" }}transform/podLogs{{ end }}
+{{ define "otelcol.config.transform.pod_logs" }}
+{{ include "otelcol.config.transform_name.pod_logs" . }}:
+  error_mode: ignore
+  log_statements:
+    - context: resource
+      statements:
+        - set(attributes["pod"], attributes["k8s.pod.name"])
+        - set(attributes["container"], attributes["k8s.container.name"])
+        - set(attributes["namespace"], attributes["k8s.namespace.name"])
+        - set(attributes["cluster"], {{ required ".Values.cluster.name is a required value. Please set it and try again." .Values.cluster.name | quote }})
+        - set(attributes["job"], Concat([attributes["k8s.namespace.name"], attributes["k8s.pod.name"]], "/"))
 {{ end }}
 
 {{ define "otelcol.config.resource_name.pod_logs" }}resource/podLogs{{ end }}
@@ -86,15 +100,5 @@
       value: raw
     - action: insert
       key: loki.resource.labels
-      value: filename, container, pod, namespace, cluster, job
-{{ end }}
-
-{{ define "otelcol.config.transform_name.pod_logs" }}transform/podLogs{{ end }}
-{{ define "otelcol.config.transform.pod_logs" }}
-{{ include "otelcol.config.transform_name.pod_logs" . }}:
-  error_mode: ignore
-  log_statements:
-    - context: resource
-      statements:
-        - set(attributes["job"], Concat([attributes["namespace"], attributes["pod"]], "/"))
+      value: container, pod, namespace, cluster, job
 {{ end }}
