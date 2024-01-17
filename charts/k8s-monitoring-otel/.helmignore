@@ -1,0 +1,8 @@
+.git
+.gitignore
+.idea
+ci
+test
+Makefile
+README.md.gotmpl
+values.schema.modifications.json
