@@ -4,21 +4,19 @@ set -eo pipefail
 
 AGENT_HOST="${AGENT_HOST:-http://localhost:8080}"
 
-function discoveryRelabel() {
-    local component=$1
-    details=$(curl --get --silent --show-error "${AGENT_HOST}/api/v0/web/components/${component}")
-    echo "${component}"
+function discoveryKubernetes() {
+    local details=$1
+    jq -r '"  Found: (\(.exports[0].value.value | length))"' <(echo "${details}")
+}
 
+function discoveryRelabel() {
+    local details=$1
     jq -r '"  Inputs: \(.referencesTo[0]) (\(.arguments[0].value.value | length))"' <(echo "${details}")
     jq -r '"  Outputs: \(.referencedBy[0]) (\(.exports[0].value.value | length))"' <(echo "${details}")
-    echo
 }
 
 function prometheusScrape() {
-    local component=$1
-    details=$(curl --get --silent --show-error "${AGENT_HOST}/api/v0/web/components/${component}")
-    echo "${component}"
-
+    local details=$1
     inputCount=$(jq -r '.arguments[] | select(.name == "targets") | .value.value | length' <(echo "${details}"))
     echo "  Inputs: ${inputCount}"
     if [ "${inputCount}" -gt 0 ]; then
@@ -37,14 +35,10 @@ function prometheusScrape() {
             jq -r --argjson i "${i}" '"    Scrape error: \(.debugInfo[$i-1].body[] | select(.name == "last_error") | .value.value)"' <(echo "${details}")
         done
     fi
-    echo
 }
 
-function prometheusOperatorServiceMonitors() {
-    local component=$1
-    details=$(curl --get --silent --show-error "${AGENT_HOST}/api/v0/web/components/${component}")
-    echo "${component}"
-
+function prometheusOperatorMetricObject() {
+    local details=$1
     inputs=$(jq -r '[.debugInfo[] | select(.name == "crds")]' <(echo "${details}"))
     inputCount=$(jq length <(echo "${inputs}"))
     echo "  Discovered: ${inputCount}"
@@ -67,7 +61,6 @@ function prometheusOperatorServiceMonitors() {
             jq -r --argjson i "${i}" '"    Scrape error: \(.[$i-1].body[] | select(.name == "last_error") | .value.value)"' <(echo "${scrapes}")
         done
     fi
-    echo
 }
 
 if [ -z "${AGENT_HOST}" ]; then
@@ -82,13 +75,32 @@ fi
 
 components=$(curl --get --silent --show-error "${AGENT_HOST}/api/v0/web/components" | jq -r '.[].localID' | sort)
 while IFS= read -r component; do
-    if [[ "${component}" == discovery.relabel.* ]]; then
-        discoveryRelabel "${component}"
-    fi
-    if [[ "${component}" == prometheus.scrape.* ]]; then
-        prometheusScrape "${component}"
-    fi
-    if [[ "${component}" == prometheus.operator.servicemonitors.* ]]; then
-        prometheusOperatorServiceMonitors "${component}"
-    fi
+    details=$(curl --get --silent --show-error "${AGENT_HOST}/api/v0/web/components/${component}")
+    case "${component}" in
+      discovery.kubernetes.*)
+        echo "${component}"
+        discoveryKubernetes "${details}"
+        echo
+        ;;
+      discovery.relabel.*)
+        echo "${component}"
+        discoveryRelabel "${details}"
+        echo
+        ;;
+      prometheus.scrape.*)
+        echo "${component}"
+        prometheusScrape "${details}"
+        echo
+        ;;
+      prometheus.operator.podmonitors.*)
+        echo "${component}"
+        prometheusOperatorMetricObject "${details}"
+        echo
+        ;;
+      prometheus.operator.servicemonitors.*)
+        echo "${component}"
+        prometheusOperatorMetricObject "${details}"
+        echo
+        ;;
+    esac
 done <<< "${components}"
