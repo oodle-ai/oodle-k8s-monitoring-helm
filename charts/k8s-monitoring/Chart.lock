@@ -26,5 +26,8 @@ dependencies:
 - name: opencost
   repository: https://opencost.github.io/opencost-helm-chart
   version: 1.35.0
-digest: sha256:f9e451215b8576848ac6a7759e0cdb60bee2283ff1a7aca7d8dd5774a76fb70a
-generated: "2024-05-06T00:17:25.609663266Z"
+- name: beyla
+  repository: https://grafana.github.io/helm-charts
+  version: 1.0.0
+digest: sha256:cb9f7ac946949c4e9493843fd6a439182f57a4b9ffd178dcd8b03486821790fc
+generated: "2024-05-07T12:18:44.422292-05:00"

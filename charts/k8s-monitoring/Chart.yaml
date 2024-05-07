@@ -51,3 +51,7 @@ dependencies:
     version: 1.35.0
     repository: https://opencost.github.io/opencost-helm-chart
     condition: opencost.enabled
+  - name: beyla
+    version: 1.0.0
+    repository: https://grafana.github.io/helm-charts
+    condition: beyla.enabled
