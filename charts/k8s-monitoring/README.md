@@ -752,7 +752,7 @@ The Prometheus and Loki services may be hosted on the same cluster, or remotely 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| kepler.enabled | bool | `false` |  |
+| kepler.enabled | bool | `false` | Should this Helm chart deploy Kepler to the cluster. Set this to false if your cluster already has Kepler, or if you do not want to scrape metrics from Kepler. |
 | metrics.kepler.enabled | bool | `false` | Scrape energy metrics from Kepler |
 | metrics.kepler.extraMetricRelabelingRules | string | `""` | Rule blocks to be added to the prometheus.relabel component for Kepler. ([docs](https://grafana.com/docs/alloy/latest/reference/components/prometheus.relabel/#rule-block)) These relabeling rules are applied post-scrape against the metrics returned from the scraped target, no __meta* labels are present. |
 | metrics.kepler.extraRelabelingRules | string | `""` | Rule blocks to be added to the discovery.relabel component for Kepler. These relabeling rules are applied pre-scrape against the targets from service discovery. Before the scrape, any remaining target labels that start with __ (i.e. __meta_kubernetes*) are dropped. ([docs](https://grafana.com/docs/alloy/latest/reference/components/discovery.relabel/#rule-block)) |
