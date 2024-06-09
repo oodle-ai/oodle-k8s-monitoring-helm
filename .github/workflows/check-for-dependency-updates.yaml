@@ -29,7 +29,7 @@ jobs:
       - name: Run Updatecli
         id: update-alloy
         run: |
-          updatecli apply --config ${UPDATECLI_CONFIG_DIR}/alloy.yaml
+          updatecli apply --config "${UPDATECLI_CONFIG_DIR}/alloy.yaml"
           if ! git diff --exit-code > /dev/null; then
             echo "changed=true" >> "${GITHUB_OUTPUT}"
           fi
@@ -75,7 +75,7 @@ jobs:
       - name: Run Updatecli
         id: update-kepler
         run: |
-          updatecli apply --config ${UPDATECLI_CONFIG_DIR}/kepler.yaml
+          updatecli apply --config "${UPDATECLI_CONFIG_DIR}/kepler.yaml"
           if ! git diff --exit-code > /dev/null; then
             echo "changed=true" >> "${GITHUB_OUTPUT}"
           fi
@@ -121,7 +121,7 @@ jobs:
       - name: Run Updatecli
         id: update-kube-state-metrics
         run: |
-          updatecli apply --config ${UPDATECLI_CONFIG_DIR}/kube-state-metrics.yaml
+          updatecli apply --config "${UPDATECLI_CONFIG_DIR}/kube-state-metrics.yaml"
           if ! git diff --exit-code > /dev/null; then
             echo "changed=true" >> "${GITHUB_OUTPUT}"
           fi
@@ -167,7 +167,7 @@ jobs:
       - name: Run Updatecli
         id: update-node-exporter
         run: |
-          updatecli apply --config ${UPDATECLI_CONFIG_DIR}/node-exporter.yaml
+          updatecli apply --config "${UPDATECLI_CONFIG_DIR}/node-exporter.yaml"
           if ! git diff --exit-code > /dev/null; then
             echo "changed=true" >> "${GITHUB_OUTPUT}"
           fi
@@ -213,7 +213,7 @@ jobs:
       - name: Run Updatecli
         id: update-opencost
         run: |
-          updatecli apply --config ${UPDATECLI_CONFIG_DIR}/opencost.yaml
+          updatecli apply --config "${UPDATECLI_CONFIG_DIR}/opencost.yaml"
           if ! git diff --exit-code > /dev/null; then
             echo "changed=true" >> "${GITHUB_OUTPUT}"
           fi
@@ -259,7 +259,7 @@ jobs:
       - name: Run Updatecli
         id: update-prometheus-operator-crds
         run: |
-          updatecli apply --config ${UPDATECLI_CONFIG_DIR}/prometheus-operator-crds.yaml
+          updatecli apply --config "${UPDATECLI_CONFIG_DIR}/prometheus-operator-crds.yaml"
           if ! git diff --exit-code > /dev/null; then
             echo "changed=true" >> "${GITHUB_OUTPUT}"
           fi
@@ -305,7 +305,7 @@ jobs:
       - name: Run Updatecli
         id: update-windows-exporter
         run: |
-          updatecli apply --config ${UPDATECLI_CONFIG_DIR}/windows-exporter.yaml
+          updatecli apply --config "${UPDATECLI_CONFIG_DIR}/windows-exporter.yaml"
           if ! git diff --exit-code > /dev/null; then
             echo "changed=true" >> "${GITHUB_OUTPUT}"
           fi
