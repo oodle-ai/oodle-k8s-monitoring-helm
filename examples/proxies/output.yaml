@@ -845,7 +845,6 @@ data:
     prometheus.remote_write "metrics_service" {
       endpoint {
         url = nonsensitive(remote.kubernetes.secret.metrics_service.data["host"]) + "/api/prom/push"
-        headers = { "X-Scope-OrgID" = nonsensitive(remote.kubernetes.secret.metrics_service.data["tenantId"]) }
         proxy_url = "https://localhost:8080"
     
         basic_auth {
@@ -940,7 +939,6 @@ data:
     loki.write "logs_service" {
       endpoint {
         url = nonsensitive(remote.kubernetes.secret.logs_service.data["host"]) + "/loki/api/v1/push"
-        tenant_id = nonsensitive(remote.kubernetes.secret.logs_service.data["tenantId"])
         proxy_url = "https://localhost:8080"
     
         basic_auth {
@@ -1001,7 +999,6 @@ data:
     loki.write "logs_service" {
       endpoint {
         url = nonsensitive(remote.kubernetes.secret.logs_service.data["host"]) + "/loki/api/v1/push"
-        tenant_id = nonsensitive(remote.kubernetes.secret.logs_service.data["tenantId"])
         proxy_url = "https://localhost:8080"
     
         basic_auth {
@@ -1169,7 +1166,6 @@ data:
     loki.write "logs_service" {
       endpoint {
         url = nonsensitive(remote.kubernetes.secret.logs_service.data["host"]) + "/loki/api/v1/push"
-        tenant_id = nonsensitive(remote.kubernetes.secret.logs_service.data["tenantId"])
         proxy_url = "https://localhost:8080"
     
         basic_auth {
@@ -53293,7 +53289,6 @@ data:
     prometheus.remote_write "metrics_service" {
       endpoint {
         url = nonsensitive(remote.kubernetes.secret.metrics_service.data["host"]) + "/api/prom/push"
-        headers = { "X-Scope-OrgID" = nonsensitive(remote.kubernetes.secret.metrics_service.data["tenantId"]) }
         proxy_url = "https://localhost:8080"
     
         basic_auth {
@@ -53388,7 +53383,6 @@ data:
     loki.write "logs_service" {
       endpoint {
         url = nonsensitive(remote.kubernetes.secret.logs_service.data["host"]) + "/loki/api/v1/push"
-        tenant_id = nonsensitive(remote.kubernetes.secret.logs_service.data["tenantId"])
         proxy_url = "https://localhost:8080"
     
         basic_auth {
@@ -53441,7 +53435,6 @@ data:
     loki.write "logs_service" {
       endpoint {
         url = nonsensitive(remote.kubernetes.secret.logs_service.data["host"]) + "/loki/api/v1/push"
-        tenant_id = nonsensitive(remote.kubernetes.secret.logs_service.data["tenantId"])
         proxy_url = "https://localhost:8080"
     
         basic_auth {
@@ -53601,7 +53594,6 @@ data:
     loki.write "logs_service" {
       endpoint {
         url = nonsensitive(remote.kubernetes.secret.logs_service.data["host"]) + "/loki/api/v1/push"
-        tenant_id = nonsensitive(remote.kubernetes.secret.logs_service.data["tenantId"])
         proxy_url = "https://localhost:8080"
     
         basic_auth {
