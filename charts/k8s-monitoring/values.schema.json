@@ -637,6 +637,9 @@
         "global": {
             "type": "object",
             "properties": {
+                "extraConfig": {
+                    "type": "string"
+                },
                 "image": {
                     "type": "object",
                     "properties": {
