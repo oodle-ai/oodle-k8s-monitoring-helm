@@ -745,6 +745,7 @@ prometheus.relabel "metrics_service" {
 prometheus.remote_write "metrics_service" {
   endpoint {
     url = remote.kubernetes.secret.grafana_cloud.data["prometheus-host"] + "/api/prom/push"
+    headers = { "X-Scope-OrgID" = coalesce(remote.kubernetes.secret.grafana_cloud.data["prometheus-tenant"], "") }
 
     basic_auth {
       username = remote.kubernetes.secret.grafana_cloud.data["prometheus-username"]
@@ -831,6 +832,7 @@ loki.process "logs_service" {
 loki.write "logs_service" {
   endpoint {
     url = remote.kubernetes.secret.grafana_cloud.data["loki-host"] + "/loki/api/v1/push"
+    headers = { "X-Scope-OrgID" = coalesce(remote.kubernetes.secret.grafana_cloud.data["loki-tenant"], "") }
 
     basic_auth {
       username = remote.kubernetes.secret.grafana_cloud.data["loki-username"]
@@ -841,6 +843,10 @@ loki.write "logs_service" {
 
 
 // Tempo
+remote.kubernetes.secret "traces_service" {
+  name = "tempo-k8s-monitoring"
+  namespace = "default"
+}
 
 otelcol.auth.basic "traces_service" {
   username = remote.kubernetes.secret.grafana_cloud.data["tempo-username"]
@@ -852,6 +858,7 @@ otelcol.exporter.otlp "traces_service" {
     endpoint = remote.kubernetes.secret.grafana_cloud.data["tempo-host"]
 
     auth = otelcol.auth.basic.traces_service.handler
+    headers = { "X-Scope-OrgID" = coalesce(remote.kubernetes.secret.grafana_cloud.data["tempo-tenant"], "") }
   }
 }
 
