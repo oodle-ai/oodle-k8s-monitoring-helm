@@ -767,25 +767,25 @@ pyroscope.scrape "pyroscope_scrape_fgprof" {
   forward_to = [pyroscope.write.profiles_service.receiver]
 }
 // Pyroscope
-remote.kubernetes.secret "profiles_service" {
-  name = "pyroscope-k8s-monitoring"
-  namespace = "default"
-}
 pyroscope.write "profiles_service" {
   endpoint {
-    url = nonsensitive(remote.kubernetes.secret.profiles_service.data["host"])
+    url = remote.kubernetes.secret.grafana_cloud_profiles.data["pyroscope-host"]
 
     basic_auth {
-      username = nonsensitive(remote.kubernetes.secret.profiles_service.data["username"])
-      password = remote.kubernetes.secret.profiles_service.data["password"]
+      username = remote.kubernetes.secret.grafana_cloud_profiles.data["pyroscope-username"]
+      password = remote.kubernetes.secret.grafana_cloud_profiles.data["pyroscope-password"]
     }
   }
   external_labels = {
-    cluster = "profiles-enabled-test",
+    cluster = "credentials-from-test",
   }
 }
 
 logging {
   level  = "info"
   format = "logfmt"
+}
+remote.kubernetes.secret "grafana_cloud_profiles" {
+  namespace = "default"
+  name = "grafana-cloud-credentials"
 }

@@ -209,6 +209,9 @@
                                 "password": {
                                     "type": "string"
                                 },
+                                "passwordFrom": {
+                                    "type": "string"
+                                },
                                 "passwordKey": {
                                     "type": "string"
                                 },
@@ -217,6 +220,9 @@
                                         "string",
                                         "integer"
                                     ]
+                                },
+                                "usernameFrom": {
+                                    "type": "string"
                                 },
                                 "usernameKey": {
                                     "type": "string"
@@ -227,6 +233,9 @@
                             "type": "object"
                         },
                         "host": {
+                            "type": "string"
+                        },
+                        "hostFrom": {
                             "type": "string"
                         },
                         "hostKey": {
@@ -325,6 +334,9 @@
                                 "password": {
                                     "type": "string"
                                 },
+                                "passwordFrom": {
+                                    "type": "string"
+                                },
                                 "passwordKey": {
                                     "type": "string"
                                 },
@@ -333,6 +345,9 @@
                                         "string",
                                         "integer"
                                     ]
+                                },
+                                "usernameFrom": {
+                                    "type": "string"
                                 },
                                 "usernameKey": {
                                     "type": "string"
@@ -343,6 +358,9 @@
                             "type": "object"
                         },
                         "host": {
+                            "type": "string"
+                        },
+                        "hostFrom": {
                             "type": "string"
                         },
                         "hostKey": {
@@ -418,6 +436,9 @@
                                 "integer"
                             ]
                         },
+                        "tenantIdFrom": {
+                            "type": "string"
+                        },
                         "tenantIdKey": {
                             "type": "string"
                         },
@@ -458,6 +479,9 @@
                                 "password": {
                                     "type": "string"
                                 },
+                                "passwordFrom": {
+                                    "type": "string"
+                                },
                                 "passwordKey": {
                                     "type": "string"
                                 },
@@ -466,6 +490,9 @@
                                         "string",
                                         "integer"
                                     ]
+                                },
+                                "usernameFrom": {
+                                    "type": "string"
                                 },
                                 "usernameKey": {
                                     "type": "string"
@@ -476,6 +503,9 @@
                             "type": "object"
                         },
                         "host": {
+                            "type": "string"
+                        },
+                        "hostFrom": {
                             "type": "string"
                         },
                         "hostKey": {
@@ -504,6 +534,9 @@
                                 "integer"
                             ]
                         },
+                        "tenantIdFrom": {
+                            "type": "string"
+                        },
                         "tenantIdKey": {
                             "type": "string"
                         },
@@ -524,6 +557,9 @@
                                 "password": {
                                     "type": "string"
                                 },
+                                "passwordFrom": {
+                                    "type": "string"
+                                },
                                 "passwordKey": {
                                     "type": "string"
                                 },
@@ -533,12 +569,18 @@
                                         "integer"
                                     ]
                                 },
+                                "usernameFrom": {
+                                    "type": "string"
+                                },
                                 "usernameKey": {
                                     "type": "string"
                                 }
                             }
                         },
                         "host": {
+                            "type": "string"
+                        },
+                        "hostFrom": {
                             "type": "string"
                         },
                         "hostKey": {
@@ -569,6 +611,9 @@
                                 "string",
                                 "integer"
                             ]
+                        },
+                        "tenantIdFrom": {
+                            "type": "string"
                         },
                         "tenantIdKey": {
                             "type": "string"
@@ -2043,6 +2088,9 @@
             "properties": {
                 "enabled": {
                     "type": "boolean"
+                },
+                "extraConfig": {
+                    "type": "string"
                 },
                 "receiver": {
                     "type": "object",
