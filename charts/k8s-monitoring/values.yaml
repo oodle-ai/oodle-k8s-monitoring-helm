@@ -1331,6 +1331,10 @@ logs:
     # @section -- Logs Scrape: Pod Logs
     extraStageBlocks: ""
 
+  alloyModules:
+    option2Modules: []
+    option3Modules: []
+
   # PodLog Objects
   podLogsObjects:
     # -- Enable discovery of Grafana Alloy PodLogs objects.

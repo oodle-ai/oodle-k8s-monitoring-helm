@@ -87,13 +87,30 @@ discovery.relabel "filtered_pod_logs" {
   }
 {{- end }}
 }
+
+{{ $lastDiscoveryComponent := "discovery.relabel.filtered_pod_logs.output" }}
+{{- range .Values.logs.alloyModules.option2Modules }}
+{{ .name  }}.discover "logs" {
+  targets = {{ $lastDiscoveryComponent }}
+}
+{{ $lastDiscoveryComponent = printf "%s.discover.logs.output" .name }}
+{{- end }}
+
+{{- range .Values.logs.alloyModules.option3Modules }}
+{{ .name  }}.filter "logs" {
+  targets = {{ $lastDiscoveryComponent }}
+}
+{{ $lastDiscoveryComponent = printf "%s.filter.logs.output" .name }}
+{{- end }}
+
 {{ if eq .Values.logs.pod_logs.gatherMethod "volumes" }}
 local.file_match "pod_logs" {
-  path_targets = discovery.relabel.filtered_pod_logs.output
+  path_targets = {{ $lastDiscoveryComponent }}
 }
 
 loki.source.file "pod_logs" {
   targets    = local.file_match.pod_logs.targets
+  tail_from_end = true
   forward_to = [loki.process.pod_logs.receiver]
 }
 {{ else if eq .Values.logs.pod_logs.gatherMethod "api" }}

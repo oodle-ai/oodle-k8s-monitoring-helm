@@ -1,4 +1,20 @@
 {{ define "alloy.config.logs.pod_logs_processor" }}
+remote.kubernetes.configmap "modules" {
+  name = "modules"
+  namespace = "monitoring"
+}
+
+{{- range .Values.logs.alloyModules.option2Modules }}
+import.string "{{ .name  }}" {
+  content = remote.kubernetes.configmap.modules.data[{{ .file | quote }}]
+}
+{{- end }}
+{{- range .Values.logs.alloyModules.option3Modules }}
+import.string "{{ .name  }}" {
+  content = remote.kubernetes.configmap.modules.data[{{ .file | quote }}]
+}
+{{- end }}
+
 loki.process "pod_logs" {
   stage.match {
     selector = "{tmp_container_runtime=\"containerd\"}"
@@ -52,6 +68,13 @@ loki.process "pod_logs" {
 {{- if .Values.logs.pod_logs.extraStageBlocks }}
 {{ tpl .Values.logs.pod_logs.extraStageBlocks $ | indent 2 }}
 {{ end }}
+
+{{- range .Values.logs.alloyModules.option2Modules }}
+  forward_to = [{{ printf "%s.process.logs.receiver" .name }}]
+}
+
+{{ .name  }}.process "logs" {
+{{- end }}
   forward_to = [loki.process.logs_service.receiver]
 }
 {{ end }}
