@@ -472,6 +472,15 @@
                         "tenantIdKey": {
                             "type": "string"
                         },
+                        "apiKey": {
+                            "type": [
+                                "string",
+                                "integer"
+                            ]
+                        },
+                        "apiKeyKey": {
+                            "type": "string"
+                        },
                         "tls": {
                             "type": "object"
                         },
