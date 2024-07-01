@@ -12,7 +12,7 @@ env:
   CR_VERSION: "1.5.0"
 jobs:
   setup:
-    runs-on: aws-ci-runner
+    runs-on: self-hosted
     outputs:
       changed: ${{ steps.list-changed.outputs.changed }}
       chartpath: ${{ steps.list-changed.outputs.chartpath }}
@@ -65,7 +65,7 @@ jobs:
 
   release:
     needs: [setup]
-    runs-on: aws-ci-runner
+    runs-on: self-hosted
     if: needs.setup.outputs.changed == 'true'
     steps:
       - name: Checkout
