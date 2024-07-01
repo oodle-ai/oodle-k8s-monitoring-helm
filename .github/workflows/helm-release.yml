@@ -137,7 +137,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ steps.parse-chart.outputs.tagname }}
-          repository: oodle-ai/k8s-monitoring-helm
+          repository: oodle-ai/oodle-k8s-monitoring-helm
           tag_name: ${{ steps.parse-chart.outputs.tagname }}
           token: ${{ secrets.GH_BOT_ACCESS_TOKEN }}
           generate_release_notes: true
