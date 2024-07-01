@@ -127,9 +127,9 @@ jobs:
       - name: Create Helm package
         run: |
           cd source
-          helm repo add grafana https://grafana.github.io/helm-charts
-          helm repo add opencost https://opencost.github.io/opencost-helm-chart
-          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          #helm repo add grafana https://grafana.github.io/helm-charts
+          #helm repo add opencost https://opencost.github.io/opencost-helm-chart
+          #helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
           "${CR_TOOL_PATH}/cr" package "${{ steps.parse-chart.outputs.chartpath }}" --config "${CR_CONFIGFILE}" --package-path "${CR_PACKAGE_PATH}"
 
