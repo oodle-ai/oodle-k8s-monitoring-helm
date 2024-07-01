@@ -133,35 +133,35 @@ jobs:
 
           "${CR_TOOL_PATH}/cr" package "${{ steps.parse-chart.outputs.chartpath }}" --config "${CR_CONFIGFILE}" --package-path "${CR_PACKAGE_PATH}"
 
-      - name: Make release on K8s Monitoring Helm
-        uses: softprops/action-gh-release@v2
-        with:
-          name: ${{ steps.parse-chart.outputs.tagname }}
-          repository: oodle-ai/oodle-k8s-monitoring-helm
-          tag_name: ${{ steps.parse-chart.outputs.tagname }}
-          token: ${{ secrets.GH_BOT_ACCESS_TOKEN }}
-          generate_release_notes: true
-          files: |
-            ${{ env.CR_PACKAGE_PATH }}/${{ steps.parse-chart.outputs.packagename }}.tgz
-
-      # Note that this creates a release in oodle-ai/helm-charts with a new tag.
-      # The tag name in oodle-ai/helm-charts is <package>-<version>, while the
-      # tag name for oodle-ai/oodle-k8s-monitoring-helm is <version>.
-      - name: Make release on Helm Charts
-        uses: softprops/action-gh-release@v2
-        with:
-          name: ${{ steps.parse-chart.outputs.packagename }}
-          repository: oodle-ai/helm-charts
-          tag_name: ${{ steps.parse-chart.outputs.packagename }}
-          token: ${{ secrets.GH_BOT_ACCESS_TOKEN }}
-          body: |
-            ${{ steps.parse-chart.outputs.desc }}
-
-            Source commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
-
-            Tag on source: https://github.com/${{ github.repository }}/releases/tag/${{ steps.parse-chart.outputs.tagname }}
-          files: |
-            ${{ env.CR_PACKAGE_PATH }}/${{ steps.parse-chart.outputs.packagename }}.tgz
+#      - name: Make release on K8s Monitoring Helm
+#        uses: softprops/action-gh-release@v2
+#        with:
+#          name: ${{ steps.parse-chart.outputs.tagname }}
+#          repository: oodle-ai/oodle-k8s-monitoring-helm
+#          tag_name: ${{ steps.parse-chart.outputs.tagname }}
+#          token: ${{ secrets.GH_BOT_ACCESS_TOKEN }}
+#          generate_release_notes: true
+#          files: |
+#            ${{ env.CR_PACKAGE_PATH }}/${{ steps.parse-chart.outputs.packagename }}.tgz
+#
+#      # Note that this creates a release in oodle-ai/helm-charts with a new tag.
+#      # The tag name in oodle-ai/helm-charts is <package>-<version>, while the
+#      # tag name for oodle-ai/oodle-k8s-monitoring-helm is <version>.
+#      - name: Make release on Helm Charts
+#        uses: softprops/action-gh-release@v2
+#        with:
+#          name: ${{ steps.parse-chart.outputs.packagename }}
+#          repository: oodle-ai/helm-charts
+#          tag_name: ${{ steps.parse-chart.outputs.packagename }}
+#          token: ${{ secrets.GH_BOT_ACCESS_TOKEN }}
+#          body: |
+#            ${{ steps.parse-chart.outputs.desc }}
+#
+#            Source commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+#
+#            Tag on source: https://github.com/${{ github.repository }}/releases/tag/${{ steps.parse-chart.outputs.tagname }}
+#          files: |
+#            ${{ env.CR_PACKAGE_PATH }}/${{ steps.parse-chart.outputs.packagename }}.tgz
 
       - name: Update helm-charts index.yaml
         run: |
