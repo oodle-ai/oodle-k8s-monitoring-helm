@@ -12,7 +12,7 @@ env:
   CR_VERSION: "1.5.0"
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: aws-ci-runner
     outputs:
       changed: ${{ steps.list-changed.outputs.changed }}
       chartpath: ${{ steps.list-changed.outputs.chartpath }}
@@ -84,7 +84,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          repository: grafana/helm-charts
+          repository: oodle-ai/helm-charts
           path: helm-charts
           token: "${{ secrets.GH_BOT_ACCESS_TOKEN }}"
 
@@ -141,14 +141,14 @@ jobs:
           files: |
             ${{ env.CR_PACKAGE_PATH }}/${{ steps.parse-chart.outputs.packagename }}.tgz
 
-      # Note that this creates a release in grafana/helm-charts with a new tag.
-      # The tag name in grafana/helm-charts is <package>-<version>, while the
+      # Note that this creates a release in oodle-ai/helm-charts with a new tag.
+      # The tag name in oodle-ai/helm-charts is <package>-<version>, while the
       # tag name for grafana/k8s-monitoring-helm is <version>.
       - name: Make release on Helm Charts
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ steps.parse-chart.outputs.packagename }}
-          repository: grafana/helm-charts
+          repository: oodle-ai/helm-charts
           tag_name: ${{ steps.parse-chart.outputs.packagename }}
           token: ${{ secrets.GH_BOT_ACCESS_TOKEN }}
           body: |
