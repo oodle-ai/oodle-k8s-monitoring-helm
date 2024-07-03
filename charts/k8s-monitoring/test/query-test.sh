@@ -118,7 +118,7 @@ function metrics_query {
 
 function logs_query {
   echo "Running LogQL query: ${LOKI_URL}?query=${1}..."
-  result=$(curl -s --get -H "X-API-KEY:${LOKI_TENANTID}" -u "${LOKI_USER}:${LOKI_PASS}" "${LOKI_URL}" --data-urlencode "query=${1}")
+  result=$(curl -s --get -H "X-Scope-OrgID:${LOKI_TENANTID}" -u "${LOKI_USER}:${LOKI_PASS}" "${LOKI_URL}" --data-urlencode "query=${1}")
   status=$(echo "${result}" | jq -r .status)
   if [ "${status}" != "success" ]; then
     echo "Query failed!"

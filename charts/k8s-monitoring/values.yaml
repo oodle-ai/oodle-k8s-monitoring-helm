@@ -50,7 +50,7 @@ externalServices:
     # @section -- External Services (Prometheus)
     writeRelabelConfigRules: ""
 
-    # -- Sets the `X-API-KEY` header when sending metrics
+    # -- Sets the `X-Scope-OrgID` header when sending metrics
     # @section -- External Services (Prometheus)
     tenantId: ""
     # -- The key for the tenant ID property in the secret

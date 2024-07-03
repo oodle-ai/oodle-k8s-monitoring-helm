@@ -9,7 +9,7 @@ remote.kubernetes.secret "profiles_service" {
 pyroscope.write "profiles_service" {
   endpoint {
     url = nonsensitive(remote.kubernetes.secret.profiles_service.data[{{ .hostKey | quote }}])
-    headers = { "X-API-KEY" = nonsensitive(remote.kubernetes.secret.profiles_service.data[{{ .tenantIdKey | quote }}]) }
+    headers = { "X-Scope-OrgID" = nonsensitive(remote.kubernetes.secret.profiles_service.data[{{ .tenantIdKey | quote }}]) }
 {{ if eq .authMode "basic" }}
     basic_auth {
       username = nonsensitive(remote.kubernetes.secret.profiles_service.data[{{ .basicAuth.usernameKey | quote }}])

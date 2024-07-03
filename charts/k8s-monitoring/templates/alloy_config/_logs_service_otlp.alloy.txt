@@ -72,7 +72,7 @@ otelcol.exporter.otlphttp "logs_service" {
     auth = otelcol.auth.basic.logs_service.handler
 {{- end }}
 {{- if .tenantId }}
-    headers = { "X-API-KEY" = nonsensitive(remote.kubernetes.secret.logs_service.data[{{ .tenantIdKey | quote }}]) }
+    headers = { "X-Scope-OrgID" = nonsensitive(remote.kubernetes.secret.logs_service.data[{{ .tenantIdKey | quote }}]) }
 {{- end }}
 {{- if .tls }}
     tls {
