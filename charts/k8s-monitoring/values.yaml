@@ -81,12 +81,12 @@ externalServices:
       # @section -- External Services (Prometheus)
       host: ""
       # @section -- External Services (Prometheus)
-      hostKey: host
+      hostKey: oodleHost
 
       # @section -- External Services (Prometheus)
       apiKey: ""
       # @section -- External Services (Prometheus)
-      apiKeyKey: apiKey
+      apiKeyKey: oodleApiKey
 
       # @section -- External Services (Prometheus)
       writeEndpoint: ""
