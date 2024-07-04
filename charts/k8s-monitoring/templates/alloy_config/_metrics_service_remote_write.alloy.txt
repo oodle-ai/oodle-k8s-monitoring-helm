@@ -40,7 +40,7 @@ prometheus.remote_write "metrics_service" {
 
   endpoint {
     url = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .oodle.hostKey | quote }}]) + "{{ .oodle.writeEndpoint }}"
-    headers = { "X-API-KEY" = remote.kubernetes.secret.metrics_service.data[{{ .oodle.apiKeyKey | quote }}] }
+    headers = { "X-API-KEY" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .oodle.apiKeyName | quote }}]) }
 {{ if .writeRelabelConfigRules }}
 {{ .writeRelabelConfigRules | indent 4 }}
 {{- end }}

@@ -489,7 +489,7 @@
                                         "string"
                                     ]
                                 },
-                                "apiKeyKey": {
+                                "apiKeyName": {
                                     "type": "string"
                                 },
                                 "writeEndpoint": {
