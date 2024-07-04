@@ -57,12 +57,6 @@ externalServices:
     # @section -- External Services (Prometheus)
     tenantIdKey: tenantId
 
-    # @section -- External Services (Prometheus)
-    apiKey: ""
-    # -- The key for the tenant ID property in the secret
-    # @section -- External Services (Prometheus)
-    apiKeyKey: apiKey
-
     # -- one of "none", "basic"
     # @section -- External Services (Prometheus)
     authMode: basic
@@ -82,6 +76,20 @@ externalServices:
       # -- The key for the password property in the secret
       # @section -- External Services (Prometheus)
       passwordKey: password
+
+    oodle:
+      # @section -- External Services (Prometheus)
+      host: ""
+      # @section -- External Services (Prometheus)
+      hostKey: host
+
+      # @section -- External Services (Prometheus)
+      apiKey: ""
+      # @section -- External Services (Prometheus)
+      apiKeyKey: apiKey
+
+      # @section -- External Services (Prometheus)
+      writeEndpoint: ""
 
     # Configure the Prometheus Remote Write Queue
     # [docs](https://grafana.com/docs/alloy/latest/reference/components/prometheus.remote_write/#queue_config-block)

@@ -472,16 +472,30 @@
                         "tenantIdKey": {
                             "type": "string"
                         },
-                        "apiKey": {
-                            "type": [
-                                "string"
-                            ]
-                        },
-                        "apiKeyKey": {
-                            "type": "string"
-                        },
                         "tls": {
                             "type": "object"
+                        },
+                        "oodle": {
+                            "type": "object",
+                            "properties": {
+                                "host": {
+                                    "type": "string"
+                                },
+                                "hostKey": {
+                                    "type": "string"
+                                },
+                                "apiKey": {
+                                    "type": [
+                                        "string"
+                                    ]
+                                },
+                                "apiKeyKey": {
+                                    "type": "string"
+                                },
+                                "writeEndpoint": {
+                                    "type": "string"
+                                }
+                            }
                         },
                         "wal": {
                             "type": "object",
