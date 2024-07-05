@@ -1,6 +1,6 @@
 ---
 apiVersion: v2
-name: k8s-monitoring
+name: oodle-k8s-monitoring
 description: A Helm chart for gathering, scraping, and forwarding Kubernetes telemetry data to a Grafana Stack.
 type: application
 version: 1.2.1
