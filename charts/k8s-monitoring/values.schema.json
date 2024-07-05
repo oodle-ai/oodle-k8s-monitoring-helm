@@ -475,6 +475,36 @@
                         "tls": {
                             "type": "object"
                         },
+                        "apiKey": {
+                            "type": [
+                                "string"
+                            ]
+                        },
+                        "apiKeyName": {
+                            "type": "string"
+                        },
+                        "oodle": {
+                            "type": "object",
+                            "properties": {
+                                "host": {
+                                    "type": "string"
+                                },
+                                "hostKey": {
+                                    "type": "string"
+                                },
+                                "apiKey": {
+                                    "type": [
+                                        "string"
+                                    ]
+                                },
+                                "apiKeyName": {
+                                    "type": "string"
+                                },
+                                "writeEndpoint": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "wal": {
                             "type": "object",
                             "properties": {

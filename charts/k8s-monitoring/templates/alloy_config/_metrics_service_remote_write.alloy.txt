@@ -3,7 +3,8 @@
 prometheus.remote_write "metrics_service" {
   endpoint {
     url = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .hostKey | quote }}]) + "{{ .writeEndpoint }}"
-    headers = { "X-Scope-OrgID" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .tenantIdKey | quote }}]) }
+    headers = { "X-Scope-OrgID" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .tenantIdKey | quote }}]),
+                "X-API-KEY" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .apiKeyName | quote }}]) }
 {{- if .proxyURL }}
     proxy_url = {{ .proxyURL | quote }}
 {{- end }}
@@ -37,6 +38,36 @@ prometheus.remote_write "metrics_service" {
       sample_age_limit = {{ .queue_config.sample_age_limit | quote }}
     }
   }
+
+{{- if .oodle.host }}
+  endpoint {
+    url = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .oodle.hostKey | quote }}]) + "{{ .oodle.writeEndpoint }}"
+    headers = { "X-API-KEY" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .oodle.apiKeyName | quote }}]) }
+{{ if .writeRelabelConfigRules }}
+{{ .writeRelabelConfigRules | indent 4 }}
+{{- end }}
+{{- if .tls }}
+    tls_config {
+    {{- range $k, $v := .tls }}
+      {{ $k }} = {{ $v | toJson }}
+    {{- end }}
+    }
+{{- end }}
+    send_native_histograms = {{ .sendNativeHistograms }}
+
+    queue_config {
+      capacity = {{ .queue_config.capacity }}
+      min_shards = {{ .queue_config.min_shards }}
+      max_shards = {{ .queue_config.max_shards }}
+      max_samples_per_send = {{ .queue_config.max_samples_per_send }}
+      batch_send_deadline = {{ .queue_config.batch_send_deadline | quote }}
+      min_backoff = {{ .queue_config.min_backoff | quote }}
+      max_backoff = {{ .queue_config.max_backoff | quote }}
+      retry_on_http_429 = {{ .queue_config.retry_on_http_429 }}
+      sample_age_limit = {{ .queue_config.sample_age_limit | quote }}
+    }
+  }
+{{- end }}
 
   wal {
     truncate_frequency = {{ .wal.truncateFrequency | quote }}
