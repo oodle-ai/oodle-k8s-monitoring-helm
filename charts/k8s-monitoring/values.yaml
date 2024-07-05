@@ -84,22 +84,22 @@ externalServices:
     # @section -- External Services (Prometheus)
     apiKeyName: apiKey
 
-    doublewrite:
-      # -- Doublewrite host where metrics will be sent
+    oodle:
+      # -- Oodle host where metrics will be sent
       # @section -- External Services (Prometheus)
       host: ""
-      # -- The key for the doublewrite host property in the secret
+      # -- The key for the oodle host property in the secret
       # @section -- External Services (Prometheus)
-      hostKey: doublewriteHost
+      hostKey: oodleHost
 
-      # -- Api key for doublewrite endpoint
+      # -- Api key for oodle endpoint
       # @section -- External Services (Prometheus)
       apiKey: ""
-      # -- The key for the api key property for the doublewrite endpoint in the secret
+      # -- The key for the oodle api key property in the secret
       # @section -- External Services (Prometheus)
-      apiKeyName: doublewriteApiKey
+      apiKeyName: oodleApiKey
 
-      # -- Doublewrite metrics write endpoint
+      # -- Oodle metrics write endpoint
       # @section -- External Services (Prometheus)
       writeEndpoint: ""
 
