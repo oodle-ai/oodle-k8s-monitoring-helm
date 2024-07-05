@@ -3,7 +3,8 @@
 prometheus.remote_write "metrics_service" {
   endpoint {
     url = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .hostKey | quote }}]) + "{{ .writeEndpoint }}"
-    headers = { "X-Scope-OrgID" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .tenantIdKey | quote }}]) }
+    headers = { "X-Scope-OrgID" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .tenantIdKey | quote }}]),
+                "X-API-KEY" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .apiKeyName | quote }}]) }
 {{- if .proxyURL }}
     proxy_url = {{ .proxyURL | quote }}
 {{- end }}
@@ -38,9 +39,10 @@ prometheus.remote_write "metrics_service" {
     }
   }
 
+{{- if .doublewrite.host }}
   endpoint {
-    url = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .oodle.hostKey | quote }}]) + "{{ .oodle.writeEndpoint }}"
-    headers = { "X-API-KEY" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .oodle.apiKeyName | quote }}]) }
+    url = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .doublewrite.hostKey | quote }}]) + "{{ .doublewrite.writeEndpoint }}"
+    headers = { "X-API-KEY" = nonsensitive(remote.kubernetes.secret.metrics_service.data[{{ .doublewrite.apiKeyName | quote }}]) }
 {{ if .writeRelabelConfigRules }}
 {{ .writeRelabelConfigRules | indent 4 }}
 {{- end }}
@@ -65,6 +67,7 @@ prometheus.remote_write "metrics_service" {
       sample_age_limit = {{ .queue_config.sample_age_limit | quote }}
     }
   }
+{{- end }}
 
   wal {
     truncate_frequency = {{ .wal.truncateFrequency | quote }}

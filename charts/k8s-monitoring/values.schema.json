@@ -475,7 +475,15 @@
                         "tls": {
                             "type": "object"
                         },
-                        "oodle": {
+                        "apiKey": {
+                            "type": [
+                                "string"
+                            ]
+                        },
+                        "apiKeyName": {
+                            "type": "string"
+                        },
+                        "doublewrite": {
                             "type": "object",
                             "properties": {
                                 "host": {
