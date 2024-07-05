@@ -117,9 +117,13 @@ jobs:
 
       - name: Install CR tool
         run: |
-          mkdir -p "${CR_TOOL_PATH}"
-          mkdir -p "${CR_PACKAGE_PATH}"
-          mkdir -p "${CR_INDEX_PATH}"
+          mkdir -rf "${CR_TOOL_PATH}"
+          mkdir -rf "${CR_PACKAGE_PATH}"
+          mkdir -rf "${CR_INDEX_PATH}"
+          
+          mkdir "${CR_TOOL_PATH}"
+          mkdir "${CR_PACKAGE_PATH}"
+          mkdir "${CR_INDEX_PATH}"
           curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v${CR_VERSION}/chart-releaser_${CR_VERSION}_linux_amd64.tar.gz"
           tar -xzf cr.tar.gz -C "${CR_TOOL_PATH}"
           rm -f cr.tar.gz
