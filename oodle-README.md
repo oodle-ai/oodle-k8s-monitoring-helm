@@ -5,4 +5,4 @@ This repo is a fork of [grafana/k8s-monitoring-helm](https://github.com/grafana/
 
 ## Installation
 
-Please refer to [k8s-monitoring installation](https://github.com/oodle-ai/helm-charts?tab=readme-ov-file#k8s-monitoring) on Oodle helm chart repo.
+Please refer to [k8s-monitoring installation](https://github.com/oodle-ai/helm-charts?tab=readme-ov-file#k8s-monitoring) on Oodle helm charts repo.
