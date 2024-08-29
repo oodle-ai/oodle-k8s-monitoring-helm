@@ -2063,6 +2063,8 @@ alloy:
     # @ignored
     configMap: {create: false}
 
+    stabilityLevel: "experimental"
+
     # ignored
     extraPorts:
       - name: "otlp-grpc"
