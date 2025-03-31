@@ -568,7 +568,7 @@ metrics:
       useDefaultAllowList: true
       # -- Filter the list of metrics from Grafana Alloy to the minimal set required for Kubernetes Monitoring as well as the Grafana Alloy integration.
       # @section -- Metrics Job: Alloy
-      useIntegrationAllowList: false
+      useIntegrationAllowList: true
       # -- Metrics to keep. Can use regex.
       # @section -- Metrics Job: Alloy
       includeMetrics: []
@@ -628,7 +628,7 @@ metrics:
       # -- Filter the list of metrics from Kube State Metrics to a useful, minimal set.
       # See [Metrics Tuning and Allow Lists](#metrics-tuning-and-allow-lists)
       # @section -- Metrics Job: Kube State Metrics
-      useDefaultAllowList: true
+      useDefaultAllowList: false
       # -- Metrics to keep. Can use regex.
       # @section -- Metrics Job: Kube State Metrics
       includeMetrics: []
@@ -686,7 +686,7 @@ metrics:
       # -- Filter the list of metrics from Node Exporter to the minimal set required for Kubernetes Monitoring.
       # See [Metrics Tuning and Allow Lists](#metrics-tuning-and-allow-lists)
       # @section -- Metrics Job: Node Exporter
-      useDefaultAllowList: true
+      useDefaultAllowList: false
       # -- Filter the list of metrics from Node Exporter to the minimal set required for Kubernetes Monitoring as well as the Node Exporter integration.
       # @section -- Metrics Job: Node Exporter
       useIntegrationAllowList: false
@@ -843,7 +843,7 @@ metrics:
       # -- Filter the list of metrics from cAdvisor to the minimal set required for Kubernetes Monitoring.
       # @section -- Metrics Job: cAdvisor
       # See [Metrics Tuning and Allow Lists](#metrics-tuning-and-allow-lists)
-      useDefaultAllowList: true
+      useDefaultAllowList: false
       # -- Metrics to keep. Can use regex.
       # @section -- Metrics Job: cAdvisor
       includeMetrics: []
@@ -1304,13 +1304,13 @@ metrics:
 logs:
   # -- Capture and forward logs
   # @section -- Logs Global
-  enabled: true
+  enabled: false
 
   # Settings for Kubernetes pod logs from the worker
   pod_logs:
     # -- Capture and forward logs from Kubernetes pods
     # @section -- Logs Scrape: Pod Logs
-    enabled: true
+    enabled: false
 
     # When set to "all", every pod (filtered by the namespaces list below) will have their logs gathered, but you can
     # use the annotation to remove a pod from that list.
@@ -1381,7 +1381,7 @@ logs:
   cluster_events:
     # -- Scrape Kubernetes cluster events
     # @section -- Logs Scrape: Cluster Events
-    enabled: true
+    enabled: false
 
     # -- Log format used to forward cluster events. Allowed values: `logfmt` (default), `json`.
     # @section -- Logs Scrape: Cluster Events
@@ -1719,12 +1719,12 @@ receivers:
   grafanaCloudMetrics:
     # -- Generate host info metrics from telemetry data, used in Application Observability in Grafana Cloud.
     # @section -- OTEL Receivers (Processors)
-    enabled: true
+    enabled: false
 
   # -- Deploy a service named for Grafana Agent that matches the Alloy service. This is useful for applications that are
   # configured to send telemetry to a service named "grafana-agent" and not yet updated to send to "alloy".
   # @section -- OTEL Receivers
-  deployGrafanaAgentService: true
+  deployGrafanaAgentService: false
 
 # -- Extra configuration that will be added to the Grafana Alloy configuration file.
 # This value is templated so that you can refer to other values from this file.
@@ -1970,7 +1970,7 @@ prometheus-operator-crds:
   # Set this to false if your cluster already has the CRDs, or if you do not
   # to have Grafana Alloy scrape metrics from PodMonitors, Probes, or ServiceMonitors.
   # @section -- Chart
-  enabled: true
+  enabled: false
 
 # Settings for the OpenCost deployment
 # You can use this sections to make modifications to the OpenCost deployment.
@@ -1981,7 +1981,7 @@ opencost:
   # Set this to false if your cluster already has OpenCost, or if you do
   # not want to scrape metrics from OpenCost.
   # @section -- Chart
-  enabled: true
+  enabled: false
 
   opencost:
     # @ignored -- This skips including these values in README.md
